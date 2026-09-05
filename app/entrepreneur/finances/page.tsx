@@ -1,103 +1,41 @@
-// app/entrepreneur/finances/page.tsx
-"use client";
+﻿"use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
+import { GlassCard, PageHero, StatCard } from "../EntrepreneurUI";
+import { useBusinessState } from "../BusinessState";
 
 export default function FinancesPage() {
-  const router = useRouter();
-  const [activeTab, setActiveTab] = useState("overview");
+  const accountState = useBusinessState();
+  const [form, setForm] = useState({ type: "sale", title: "", amount: "" });
+  const [bankConnected, setBankConnected] = useState(false);
+  const [filter, setFilter] = useState<"all" | "sale" | "expense">("all");
+  const [search, setSearch] = useState("");
+  const { metrics, transactions, addTransaction, business } = accountState;
+  const filteredTransactions = useMemo(() => transactions.filter((entry) => (filter === "all" || entry.type === filter) && entry.description.toLowerCase().includes(search.toLowerCase())), [transactions, filter, search]);
 
-  const tabs = [
-    { id: "overview", label: "Overview" },
-    { id: "sales", label: "Sales" },
-    { id: "expenses", label: "Expenses" },
-    { id: "cashflow", label: "Cash Flow" },
-  ];
-
-  const stats = {
-    revenue: "R24,500",
-    expenses: "R8,200",
-    net: "R16,300",
-  };
-
-  const transactions = [
-    { date: "04 Sep", description: "Product Sales", type: "sale", amount: "+R1,400" },
-    { date: "03 Sep", description: "Stock Purchase", type: "expense", amount: "-R650" },
-    { date: "02 Sep", description: "Product Sales", type: "sale", amount: "+R2,100" },
-    { date: "01 Sep", description: "Delivery Service", type: "expense", amount: "-R350" },
-  ];
-
-  const handleAddTransaction = () => {
-    router.push("/entrepreneur/finances/add-transaction");
+  const addEntry = () => {
+    if (!form.title || !form.amount) return alert("Add a title and amount first");
+    addTransaction({ type: form.type as "sale" | "expense", description: form.title, amount: `${form.type === "sale" ? "+" : "-"}${form.amount.replace(/^[-+]/, "")}` });
+    setForm({ type: "sale", title: "", amount: "" });
   };
 
   return (
-    <div className="p-6">
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Finances</h1>
-          <button 
-            onClick={handleAddTransaction}
-            className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition text-sm font-medium cursor-pointer"
-          >
-            + Add Transaction
-          </button>
-        </div>
+    <>
+      <PageHero eyebrow="Money signal" title={`Make every rand count for ${business.name}.`} description="Record retail sales, supplier costs and bank activity so the business can prove traction, margins and funding readiness." />
+      <div className="entrepreneur-grid entrepreneur-grid-4"><StatCard label="Sales" value={metrics.monthlyRevenue} note="Captured revenue" /><StatCard label="Expenses" value={metrics.monthlyExpenses} note="Known operating costs" tone="red" /><StatCard label="Profit" value={metrics.netProfit} note="Trading surplus" tone="green" /><StatCard label="Runway" value="68 days" note="Estimated cash comfort" tone="gold" /></div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <p className="text-sm text-gray-500">Revenue</p>
-            <p className="text-2xl font-bold text-gray-900">{stats.revenue}</p>
-          </div>
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <p className="text-sm text-gray-500">Expenses</p>
-            <p className="text-2xl font-bold text-red-600">{stats.expenses}</p>
-          </div>
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <p className="text-sm text-gray-500">Net</p>
-            <p className="text-2xl font-bold text-emerald-600">{stats.net}</p>
-          </div>
-        </div>
-
-        <div className="bg-gray-50 rounded-lg p-8 mb-6 text-center">
-          <p className="text-gray-400">Revenue vs Expenses Chart</p>
-          <div className="h-32 flex items-center justify-center text-sm text-gray-500">
-            📊 Chart will appear here
-          </div>
-        </div>
-
-        <div className="flex gap-6 border-b border-gray-200 mb-6">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`pb-3 px-1 text-sm font-medium transition cursor-pointer ${
-                activeTab === tab.id
-                  ? "text-emerald-600 border-b-2 border-emerald-600"
-                  : "text-gray-500 hover:text-gray-700"
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-
-        <div className="space-y-3">
-          <h3 className="font-semibold text-gray-800 mb-3">Recent Transactions</h3>
-          {transactions.map((transaction, index) => (
-            <div key={index} className="flex justify-between items-center py-3 border-b border-gray-100">
-              <div>
-                <p className="text-sm font-medium text-gray-800">{transaction.description}</p>
-                <p className="text-xs text-gray-400">{transaction.date}</p>
-              </div>
-              <span className={`text-sm font-semibold ${transaction.type === "sale" ? "text-emerald-600" : "text-red-600"}`}>
-                {transaction.amount}
-              </span>
-            </div>
-          ))}
-        </div>
+      <div className="bank-connect-card">
+        <div><span className="entrepreneur-pill">Bank connection</span><h2>{bankConnected ? "Bank feed connected" : "Connect your bank"}</h2><p>{bankConnected ? "Transactions can now be matched against sales, receipts and funding evidence." : "Link a business bank account to auto-match deposits, supplier payments and cashflow patterns. Prototype only — no real banking connection is made."}</p></div>
+        <div className="bank-signal"><strong>{bankConnected ? "Synced" : "Secure link"}</strong><small>{bankConnected ? "Last sync: today" : "Read-only mock flow"}</small></div>
+        <button className={bankConnected ? "entrepreneur-button-secondary" : "entrepreneur-button"} onClick={() => setBankConnected((value) => !value)}>{bankConnected ? "Disconnect" : "Connect bank"}</button>
       </div>
-    </div>
+
+      <div className="entrepreneur-grid entrepreneur-grid-2" style={{ marginTop: "1rem" }}>
+        <GlassCard><h2>Quick capture</h2><p>Drop in a sale or expense while the detail is still fresh.</p><div className="entrepreneur-grid" style={{ marginTop: "1rem" }}><select className="entrepreneur-select" value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value })}><option value="sale">Sale</option><option value="expense">Expense</option></select><input className="entrepreneur-input" placeholder="What happened?" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} /><input className="entrepreneur-input" placeholder="Amount e.g. R500" value={form.amount} onChange={(e) => setForm({ ...form, amount: e.target.value })} /><button className="entrepreneur-button" onClick={addEntry}>Add record</button></div></GlassCard>
+        <GlassCard><h2>Finance filter</h2><p>Find the records that explain today’s cash movement.</p><div className="finance-filter-bar"><button className="finance-filter" data-active={filter === "all"} onClick={() => setFilter("all")}>All</button><button className="finance-filter" data-active={filter === "sale"} onClick={() => setFilter("sale")}>Sales</button><button className="finance-filter" data-active={filter === "expense"} onClick={() => setFilter("expense")}>Expenses</button></div><input className="entrepreneur-input" placeholder="Search records..." value={search} onChange={(e) => setSearch(e.target.value)} style={{ marginTop: ".85rem" }} /></GlassCard>
+      </div>
+
+      <GlassCard className="finance-ledger"><h2>Filtered records</h2><div className="entrepreneur-list" style={{ marginTop: "1rem" }}>{filteredTransactions.map((entry) => <div className="entrepreneur-row finance-record" key={entry.id}><div><strong>{entry.description}</strong><p>{entry.date} • {entry.type === "sale" ? "Retail income" : "Operating cost"}</p></div><span className={`entrepreneur-pill ${entry.type === "sale" ? "positive" : "negative"}`}>{entry.amount}</span></div>)}</div></GlassCard>
+    </>
   );
 }

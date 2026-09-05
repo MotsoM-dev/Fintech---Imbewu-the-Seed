@@ -1,132 +1,69 @@
-// app/entrepreneur/business/page.tsx
-"use client";
+﻿"use client";
 
-import { useSession } from "next-auth/react";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { GlassCard, PageHero, StatCard } from "../EntrepreneurUI";
+import { RegistrationSetup } from "../RegistrationSetup";
+import { useBusinessState } from "../BusinessState";
 
 export default function BusinessPage() {
-  const { data: session } = useSession();
-  const router = useRouter();
-  const user = session?.user as any;
+  const accountState = useBusinessState();
+  const [activeTab, setActiveTab] = useState("profile");
+  const [coverImage, setCoverImage] = useState("");
+  const [profileImage, setProfileImage] = useState("");
+  const [profileForm, setProfileForm] = useState({
+    ownerName: accountState.account.ownerName,
+    shortName: accountState.account.shortName,
+    email: accountState.account.email,
+    name: accountState.business.name,
+    category: accountState.business.category,
+    industry: accountState.business.industry,
+    location: accountState.business.location,
+    employeeCount: accountState.business.employeeCount,
+    description: accountState.business.description,
+  });
+  const [evidenceName, setEvidenceName] = useState("");
+  const tabs = ["profile", "registration", "products", "history", "milestones"];
+  const { business, metrics, products, transactions, tasks } = accountState;
 
-  const [activeTab, setActiveTab] = useState("overview");
-
-  const tabs = [
-    { id: "overview", label: "Overview" },
-    { id: "products", label: "Products" },
-    { id: "history", label: "Trading History" },
-    { id: "milestones", label: "Milestones" },
-  ];
-
-  const handleEditProfile = () => {
-    router.push("/entrepreneur/profile");
+  const saveProfile = () => {
+    accountState.updateAccountProfile({ ownerName: profileForm.ownerName, shortName: profileForm.shortName, email: profileForm.email });
+    accountState.updateBusinessProfile({ name: profileForm.name, category: profileForm.category, industry: profileForm.industry, location: profileForm.location, employeeCount: profileForm.employeeCount, description: profileForm.description });
+    alert("Profile updated");
   };
 
-  const handleAddProduct = () => {
-    router.push("/entrepreneur/business/products");
+  const uploadEvidence = () => {
+    if (!evidenceName) return alert("Name the evidence file first");
+    accountState.addDocument({ name: evidenceName, category: "Registration" });
+    setEvidenceName("");
+  };
+
+  const previewImage = (file: File | undefined, setter: (value: string) => void) => {
+    if (!file) return;
+    setter(URL.createObjectURL(file));
   };
 
   return (
-    <div className="p-6">
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-200 pb-6">
-          <div>
-            <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-bold text-gray-900">{user?.businessName || "Your Business"}</h1>
-              <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs font-medium rounded-full">VERIFIED ✓</span>
-            </div>
-            <p className="text-gray-500">{user?.industry || "Industry not set"} • {user?.businessLocation || "Location not set"}</p>
-          </div>
-          <button 
-            onClick={handleEditProfile}
-            className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition text-sm font-medium cursor-pointer"
-          >
-            Edit Profile
-          </button>
-        </div>
+    <>
+      <PageHero eyebrow="Profile and evidence" title={business.name} description={`${accountState.account.ownerName} can edit account details, maintain the business profile and link registration evidence here.`}>
+        <button className="entrepreneur-button" onClick={saveProfile}>Save profile</button>
+      </PageHero>
 
-        <div className="mt-6">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-sm text-gray-600">Profile Completeness</span>
-            <span className="text-sm font-medium text-emerald-600">85%</span>
-          </div>
-          <div className="w-full bg-gray-200 rounded-full h-2.5">
-            <div className="bg-gradient-to-r from-emerald-500 to-teal-600 h-2.5 rounded-full" style={{ width: "85%" }}></div>
-          </div>
-        </div>
-
-        <div className="flex gap-6 mt-6 border-b border-gray-200">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`pb-3 px-1 text-sm font-medium transition cursor-pointer ${
-                activeTab === tab.id
-                  ? "text-emerald-600 border-b-2 border-emerald-600"
-                  : "text-gray-500 hover:text-gray-700"
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-
-        <div className="mt-6">
-          {activeTab === "overview" && (
-            <div className="space-y-6">
-              <div>
-                <h3 className="font-semibold text-gray-800 mb-2">About</h3>
-                <p className="text-gray-600">
-                  {user?.businessDescription || "No business description provided yet."}
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <p className="text-sm text-gray-500">Founded</p>
-                  <p className="font-semibold text-gray-900">2023</p>
-                </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <p className="text-sm text-gray-500">Employees</p>
-                  <p className="font-semibold text-gray-900">{user?.employeeCount || "N/A"}</p>
-                </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <p className="text-sm text-gray-500">Trading</p>
-                  <p className="font-semibold text-gray-900">{user?.yearsInOperation || "N/A"}</p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {activeTab === "products" && (
-            <div className="text-center py-8 text-gray-500">
-              <div className="text-4xl mb-3">📦</div>
-              <p>Add your products and services</p>
-              <button 
-                onClick={handleAddProduct}
-                className="mt-4 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition text-sm cursor-pointer"
-              >
-                + Add Product
-              </button>
-            </div>
-          )}
-
-          {activeTab === "history" && (
-            <div className="text-center py-8 text-gray-500">
-              <div className="text-4xl mb-3">📊</div>
-              <p>Your trading history will appear here</p>
-            </div>
-          )}
-
-          {activeTab === "milestones" && (
-            <div className="text-center py-8 text-gray-500">
-              <div className="text-4xl mb-3">🏆</div>
-              <p>Track your business milestones</p>
-            </div>
-          )}
-        </div>
+      <div className="entrepreneur-grid entrepreneur-grid-4">
+        <StatCard label="Profile strength" value={`${metrics.profileStrength}%`} note="Core identity and credibility" />
+        <StatCard label="Registration" value={business.registered ? "Linked" : business.registered === false ? "Not yet" : "Unknown"} note="CIPC evidence status" tone={business.registered ? "green" : "gold"} />
+        <StatCard label="Team" value={business.employeeCount} note="Jobs supported" tone="purple" />
+        <StatCard label="Avg order" value={metrics.averageOrder} note="Retail basket size" tone="blue" />
       </div>
-    </div>
+
+      <div className="entrepreneur-tabs">{tabs.map((tab) => <button key={tab} className="entrepreneur-tab" data-active={activeTab === tab} onClick={() => setActiveTab(tab)}>{tab[0].toUpperCase() + tab.slice(1)}</button>)}</div>
+
+      {activeTab === "profile" && <><section className="profile-cover-panel"><div className="profile-cover-photo" style={coverImage ? { backgroundImage: `linear-gradient(135deg, rgba(6,26,58,.38), rgba(7,95,171,.18)), url(${coverImage})` } : undefined}><div><span>Retail profile</span><h2>{business.name}</h2><p>{business.location}</p></div><label className="profile-upload-button">Change cover<input type="file" accept="image/*" onChange={(e) => previewImage(e.target.files?.[0], setCoverImage)} /></label></div><div className="profile-picture-row"><div className="profile-picture-frame">{profileImage ? <img src={profileImage} alt={`${accountState.account.ownerName} profile preview`} /> : <span>{accountState.account.shortName.charAt(0)}</span>}</div><div><h3>{accountState.account.ownerName}</h3><p>{business.category} owner building a trusted digital footprint.</p></div><label className="profile-upload-button secondary">Upload profile picture<input type="file" accept="image/*" onChange={(e) => previewImage(e.target.files?.[0], setProfileImage)} /></label></div></section><div className="entrepreneur-grid entrepreneur-grid-2"><GlassCard><h2>Edit account and business information</h2><div className="profile-edit-grid"><label><span className="entrepreneur-label">Account owner</span><input className="entrepreneur-input" value={profileForm.ownerName} onChange={(e) => setProfileForm({ ...profileForm, ownerName: e.target.value })} /></label><label><span className="entrepreneur-label">Preferred name</span><input className="entrepreneur-input" value={profileForm.shortName} onChange={(e) => setProfileForm({ ...profileForm, shortName: e.target.value })} /></label><label><span className="entrepreneur-label">Email</span><input className="entrepreneur-input" value={profileForm.email} onChange={(e) => setProfileForm({ ...profileForm, email: e.target.value })} /></label><label><span className="entrepreneur-label">Business name</span><input className="entrepreneur-input" value={profileForm.name} onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })} /></label><label><span className="entrepreneur-label">Category</span><input className="entrepreneur-input" value={profileForm.category} onChange={(e) => setProfileForm({ ...profileForm, category: e.target.value })} /></label><label><span className="entrepreneur-label">Location</span><input className="entrepreneur-input" value={profileForm.location} onChange={(e) => setProfileForm({ ...profileForm, location: e.target.value })} /></label><label className="profile-wide"><span className="entrepreneur-label">Industry</span><input className="entrepreneur-input" value={profileForm.industry} onChange={(e) => setProfileForm({ ...profileForm, industry: e.target.value })} /></label><label className="profile-wide"><span className="entrepreneur-label">Business story</span><textarea className="entrepreneur-textarea" rows={5} value={profileForm.description} onChange={(e) => setProfileForm({ ...profileForm, description: e.target.value })} /></label></div><button className="entrepreneur-button" onClick={saveProfile}>Save changes</button></GlassCard><GlassCard><h2>Registration evidence</h2><p>If you clicked “Yes, it is registered”, link the proof here so Imbewu can make the business profile funder-ready.</p><div className="entrepreneur-list" style={{ marginTop: "1rem" }}><div className="entrepreneur-row"><strong>CIPC registration certificate</strong><span className="entrepreneur-pill">Required</span></div><div className="entrepreneur-row"><strong>Company registration number</strong><span className="entrepreneur-pill">Required</span></div><div className="entrepreneur-row"><strong>Director ID copy</strong><span className="entrepreneur-pill">Useful</span></div><div className="entrepreneur-row"><strong>Bank confirmation letter</strong><span className="entrepreneur-pill">Useful</span></div></div><div className="profile-evidence-upload"><input className="entrepreneur-input" value={evidenceName} onChange={(e) => setEvidenceName(e.target.value)} placeholder="e.g. CIPC Registration Certificate.pdf" /><button className="entrepreneur-button" onClick={uploadEvidence}>Upload evidence</button></div></GlassCard></div></>}
+
+      {activeTab === "registration" && <div className="entrepreneur-grid entrepreneur-grid-2"><RegistrationSetup /><GlassCard><h2>Link registration evidence</h2><p>If the business is registered, upload the evidence funders and partners expect to see.</p><div className="entrepreneur-list" style={{ marginTop: "1rem" }}><div className="entrepreneur-row"><strong>CIPC registration certificate</strong><span className="entrepreneur-pill">Required</span></div><div className="entrepreneur-row"><strong>Company registration number</strong><span className="entrepreneur-pill">Required</span></div><div className="entrepreneur-row"><strong>Director ID copy</strong><span className="entrepreneur-pill">Useful</span></div><div className="entrepreneur-row"><strong>Bank confirmation letter</strong><span className="entrepreneur-pill">Useful</span></div></div><div className="profile-evidence-upload"><input className="entrepreneur-input" value={evidenceName} onChange={(e) => setEvidenceName(e.target.value)} placeholder="e.g. CIPC Registration Certificate.pdf" /><button className="entrepreneur-button" onClick={uploadEvidence}>Upload evidence</button></div></GlassCard></div>}
+
+      {activeTab === "products" && <GlassCard><div className="entrepreneur-grid entrepreneur-grid-3">{products.map((product) => <article className="entrepreneur-card" key={product.id}><span className="entrepreneur-pill">{product.category}</span><h3>{product.name}</h3><p>{product.description}</p><strong className="entrepreneur-price">{product.price}</strong></article>)}</div></GlassCard>}
+      {activeTab === "history" && <GlassCard><div className="entrepreneur-list">{transactions.map((tx) => <div className="entrepreneur-row" key={tx.id}><div><strong>{tx.description}</strong><p>{tx.date}</p></div><span className={`entrepreneur-pill ${tx.type === "sale" ? "positive" : "negative"}`}>{tx.amount}</span></div>)}</div></GlassCard>}
+      {activeTab === "milestones" && <GlassCard><div className="entrepreneur-list">{tasks.map((task) => <div className="entrepreneur-row task-row" key={task.title}><div><strong>{task.title}</strong><p>{task.metric}</p><div className="entrepreneur-progress"><span style={{ width: `${task.progress}%` }} /></div></div><span className="entrepreneur-pill">{task.completed ? "Complete" : `${task.progress}%`}</span></div>)}</div></GlassCard>}
+    </>
   );
 }

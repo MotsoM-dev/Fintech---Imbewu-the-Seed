@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Imbewu - From Cash Trader to Fundable Digital Business",
-  description: "Helping informal, micro, and small businesses become visible, trusted, and fundable.",
+  title: "Imbewu - Digitise Today. Build Your Footprint.",
+  description: "A digital credibility platform helping informal, micro, and small businesses become visible, trusted, and finance-ready.",
 };
 
 export default function RootLayout({
