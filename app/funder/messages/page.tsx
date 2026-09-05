@@ -1,111 +1,54 @@
-// app/funder/messages/page.tsx
 "use client";
 
 import { useState } from "react";
+import { GlassCard, PageHero, StatCard } from "../FunderUI";
 
-interface Message {
-  id: string;
-  sender: string;
-  type: string;
-  preview: string;
-  time: string;
-  unread: boolean;
-}
+const conversations = [
+  { id: "1", sender: "Khula Foods", initials: "KF", type: "Business", subject: "Cold storage proof uploaded", preview: "We added supplier quotes and August bank activity for your review.", time: "2 hours ago", unread: true, tone: "green" },
+  { id: "2", sender: "Sisonke Repair Co-op", initials: "SR", type: "Milestone", subject: "Tool purchase milestone", preview: "The cooperative shared photos of the first tool batch.", time: "1 day ago", unread: false, tone: "blue" },
+  { id: "3", sender: "Nomsa School Uniforms", initials: "NS", type: "Offer", subject: "Offer questions", preview: "Nomsa wants clarity on repayment dates before accepting.", time: "2 days ago", unread: false, tone: "gold" },
+];
 
 export default function MessagesPage() {
-  const [selectedMessage, setSelectedMessage] = useState<string | null>(null);
-
-  const messages: Message[] = [
-    { id: "1", sender: "Ubuntu Capital", type: "Fund", preview: "We reviewed your funding request and require...", time: "2 hours ago", unread: true },
-    { id: "2", sender: "Seed Fund", type: "Fund", preview: "Your application has been approved!", time: "1 day ago", unread: false },
-    { id: "3", sender: "Future Finance", type: "Support", preview: "Thanks for your response. We'll get back to you...", time: "2 days ago", unread: false },
-  ];
+  const [selectedId, setSelectedId] = useState(conversations[0].id);
+  const selected = conversations.find((conversation) => conversation.id === selectedId) || conversations[0];
 
   return (
-    <div className="p-8">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Messages</h1>
-        <p className="text-gray-500">Communicate with businesses and partners</p>
+    <>
+      <PageHero eyebrow="Messages" title="Investor conversations with momentum." description="A signal-rich inbox for funding decisions, milestone updates, business questions, and partner follow-ups." />
+      <div className="funder-grid funder-grid-3">
+        <StatCard label="Unread" value={String(conversations.filter((conversation) => conversation.unread).length)} note="Needs your attention" tone="green" />
+        <StatCard label="Milestones" value="4" note="Updates this week" tone="blue" />
+        <StatCard label="Response health" value="Fast" note="Average reply under 3h" tone="gold" />
       </div>
-
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div className="grid grid-cols-1 md:grid-cols-3">
-          {/* Message List */}
-          <div className="border-r border-gray-200">
-            <div className="p-4 border-b border-gray-200 bg-gray-50">
-              <h3 className="font-semibold text-gray-800">Inbox</h3>
-            </div>
-            <div className="divide-y divide-gray-100">
-              {messages.map((message) => (
-                <div
-                  key={message.id}
-                  onClick={() => setSelectedMessage(message.id)}
-                  className={`p-4 cursor-pointer transition ${
-                    selectedMessage === message.id ? "bg-blue-50" : "hover:bg-gray-50"
-                  } ${message.unread ? "border-l-4 border-blue-500" : ""}`}
-                >
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <p className="font-medium text-gray-800">{message.sender}</p>
-                      <p className="text-sm text-gray-500 truncate">{message.preview}</p>
-                    </div>
-                    <span className="text-xs text-gray-400 whitespace-nowrap ml-2">{message.time}</span>
-                  </div>
-                  {message.unread && (
-                    <span className="inline-block mt-1 px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded-full">New</span>
-                  )}
-                </div>
-              ))}
-            </div>
+      <GlassCard className="funder-message-shell">
+        <aside className="funder-message-list">
+          <div className="funder-message-list-head"><span className="funder-section-kicker">Inbox</span><h2>Signals</h2></div>
+          {conversations.map((conversation) => (
+            <button className={`funder-message-card funder-message-${conversation.tone}`} data-active={selectedId === conversation.id} onClick={() => setSelectedId(conversation.id)} key={conversation.id}>
+              <span className="funder-message-avatar">{conversation.initials}</span>
+              <span><strong>{conversation.sender}</strong><small>{conversation.subject}</small><em>{conversation.preview}</em></span>
+              <time>{conversation.time}</time>
+              {conversation.unread ? <b>New</b> : null}
+            </button>
+          ))}
+        </aside>
+        <section className="funder-message-thread">
+          <div className="funder-message-thread-head">
+            <div className="funder-message-avatar large">{selected.initials}</div>
+            <div><span className="funder-section-kicker">{selected.type}</span><h2>{selected.sender}</h2><p>{selected.subject}</p></div>
           </div>
-
-          {/* Message Content */}
-          <div className="col-span-2 flex flex-col h-full">
-            {selectedMessage ? (
-              <>
-                <div className="p-4 border-b border-gray-200 bg-gray-50 flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                    <span className="text-blue-600 font-medium">UC</span>
-                  </div>
-                  <div>
-                    <p className="font-medium text-gray-800">Ubuntu Capital</p>
-                    <p className="text-xs text-gray-400">Fund</p>
-                  </div>
-                </div>
-                <div className="flex-1 p-4 space-y-4">
-                  <div className="bg-gray-50 rounded-lg p-3">
-                    <p className="text-sm text-gray-700">We reviewed your funding request and require additional documentation. Please upload your latest bank statements.</p>
-                    <span className="text-xs text-gray-400 mt-1 block">2 hours ago</span>
-                  </div>
-                  <div className="bg-blue-50 rounded-lg p-3 ml-auto max-w-[80%]">
-                    <p className="text-sm text-gray-700">I'll upload them right away. Thank you for the update!</p>
-                    <span className="text-xs text-gray-400 mt-1 block">1 hour ago</span>
-                  </div>
-                </div>
-                <div className="p-4 border-t border-gray-200">
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      placeholder="Type a message..."
-                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    />
-                    <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
-                      Send
-                    </button>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <div className="flex-1 flex items-center justify-center text-gray-400">
-                <div className="text-center">
-                  <div className="text-4xl mb-3">💬</div>
-                  <p>Select a message to read</p>
-                </div>
-              </div>
-            )}
+          <div className="funder-message-bubbles">
+            <article className="funder-bubble incoming"><strong>{selected.sender}</strong><p>{selected.preview}</p><time>{selected.time}</time></article>
+            <article className="funder-bubble outgoing"><strong>You</strong><p>Thanks. I’m reviewing the request alongside the business performance and linked account details.</p><time>Just now</time></article>
+            <article className="funder-bubble incoming accent"><strong>Imbewu Signal</strong><p>This conversation is linked to a funded or active request, so the message history stays attached to investor diligence.</p></article>
           </div>
-        </div>
-      </div>
-    </div>
+          <form className="funder-message-compose" onSubmit={(event) => event.preventDefault()}>
+            <input placeholder={`Reply to ${selected.sender}...`} />
+            <button>Send</button>
+          </form>
+        </section>
+      </GlassCard>
+    </>
   );
 }

@@ -7,6 +7,7 @@ declare module "next-auth" {
       role: "entrepreneur" | "funder";
       phone?: string;
       businessName?: string;
+      funderType?: string;
       organizationName?: string;
     };
   }

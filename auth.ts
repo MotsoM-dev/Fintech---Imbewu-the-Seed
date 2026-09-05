@@ -27,6 +27,7 @@ export const authOptions: NextAuthOptions = {
         monthlyRevenue: { label: "Monthly Revenue", type: "text" },
         businessLocation: { label: "Business Location", type: "text" },
         // Funder fields
+        funderType: { label: "Funder Type", type: "text" },
         organizationName: { label: "Organization Name", type: "text" },
         organizationType: { label: "Organization Type", type: "text" },
         investmentFocus: { label: "Investment Focus", type: "text" },
@@ -68,10 +69,11 @@ export const authOptions: NextAuthOptions = {
               password: "password",
               role: "funder",
               phone: "+27 82 987 6543",
-              organizationName: "ABC Investment Partners",
-              organizationType: "Venture Capital",
-              investmentFocus: "Early Stage",
-              investmentRange: "R100,000-R500,000",
+              funderType: "Individual",
+              organizationName: "Sipho Dlamini",
+              organizationType: "Community Investor",
+              investmentFocus: "Local township businesses",
+              investmentRange: "R5,000-R25,000",
             }
           ];
           if (typeof global !== 'undefined') {
@@ -106,6 +108,7 @@ export const authOptions: NextAuthOptions = {
             newUser.monthlyRevenue = credentials.monthlyRevenue || "";
             newUser.businessLocation = credentials.businessLocation || "";
           } else if (credentials.role === "funder") {
+            newUser.funderType = credentials.funderType || "Individual";
             newUser.organizationName = credentials.organizationName || "";
             newUser.organizationType = credentials.organizationType || "";
             newUser.investmentFocus = credentials.investmentFocus || "";
@@ -158,6 +161,7 @@ export const authOptions: NextAuthOptions = {
         token.role = customUser.role || "";
         token.phone = customUser.phone || "";
         token.businessName = customUser.businessName || "";
+        token.funderType = customUser.funderType || "";
         token.organizationName = customUser.organizationName || "";
       }
       return token;
@@ -169,6 +173,7 @@ export const authOptions: NextAuthOptions = {
         customSession.role = token.role;
         customSession.phone = token.phone;
         customSession.businessName = token.businessName;
+        customSession.funderType = token.funderType;
         customSession.organizationName = token.organizationName;
       }
       return session;

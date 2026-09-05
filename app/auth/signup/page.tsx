@@ -24,11 +24,17 @@ const businessTypes = [
   "Informal Business", "Other",
 ];
 
+const funderTypes = [
+  "Individual",
+  "Company",
+  "Organization",
+  "Community Group",
+];
+
 const organizationTypes = [
-  "Venture Capital", "Private Equity", "Angel Investor",
-  "Impact Investor", "Bank", "Microfinance Institution",
-  "Government Agency", "Development Finance Institution",
-  "Corporate", "Family Office", "Other",
+  "Community Investor", "Neighbourhood Savings Group", "Angel Investor",
+  "Impact Investor", "Small Business", "Non-Profit Organization",
+  "Co-operative", "Faith-Based Organization", "Corporate", "Family Office", "Other",
 ];
 
 export default function SignUp() {
@@ -55,6 +61,7 @@ export default function SignUp() {
   const [businessLocation, setBusinessLocation] = useState("");
 
   const [organizationName, setOrganizationName] = useState("");
+  const [funderType, setFunderType] = useState("");
   const [organizationType, setOrganizationType] = useState("");
   const [investmentFocus, setInvestmentFocus] = useState("");
   const [investmentRange, setInvestmentRange] = useState("");
@@ -95,8 +102,8 @@ export default function SignUp() {
       return false;
     }
 
-    if (role === "funder" && (!organizationName || !organizationType || !investmentFocus || !investmentRange)) {
-      setError("Please fill in all organization details.");
+    if (role === "funder" && (!funderType || !organizationName || !organizationType || !investmentFocus || !investmentRange)) {
+      setError("Please fill in all funder details.");
       return false;
     }
 
@@ -146,6 +153,7 @@ export default function SignUp() {
       } else {
         Object.assign(credentials, {
           organizationName,
+          funderType,
           organizationType,
           investmentFocus,
           investmentRange,
@@ -180,6 +188,7 @@ export default function SignUp() {
           businessLocation,
         } : {
           organizationName,
+          funderType,
           organizationType,
           investmentFocus,
           investmentRange,
@@ -215,7 +224,7 @@ export default function SignUp() {
       <div className={s.formInner}>
         <AuthLogo />
         <span className={s.kicker}>Create your footprint</span>
-        <h1 className={s.title}>{step === 1 ? "Choose your growth path." : step === 2 ? "Set up your account." : role === "entrepreneur" ? "Tell us about the business." : "Tell us about your funding work."}</h1>
+        <h1 className={s.title}>{step === 1 ? "Choose your growth path." : step === 2 ? "Set up your account." : role === "entrepreneur" ? "Tell us about the business." : "Tell us how you want to fund."}</h1>
         <p className={s.subtitle}>{step === 1 ? "Imbewu supports entrepreneurs building credibility and funders looking for clearer business evidence." : "A few details help us shape the right digital credibility journey."}</p>
 
         {step > 1 && (
@@ -351,13 +360,20 @@ export default function SignUp() {
             {step === 3 && role === "funder" && (
               <>
                 <div className={s.field}>
-                  <label htmlFor="organizationName">Organization name</label>
-                  <input id="organizationName" type="text" value={organizationName} onChange={event => setOrganizationName(event.target.value)} placeholder="Your organization name" disabled={loading || success} />
+                  <label htmlFor="funderType">What kind of funder are you?</label>
+                  <select id="funderType" value={funderType} onChange={event => setFunderType(event.target.value)} disabled={loading || success}>
+                    <option value="">Select funder type</option>
+                    {funderTypes.map(type => <option key={type} value={type}>{type}</option>)}
+                  </select>
                 </div>
                 <div className={s.field}>
-                  <label htmlFor="organizationType">Organization type</label>
+                  <label htmlFor="organizationName">{funderType === "Individual" || !funderType ? "Account name" : "Company / organization name"}</label>
+                  <input id="organizationName" type="text" value={organizationName} onChange={event => setOrganizationName(event.target.value)} placeholder={funderType === "Individual" || !funderType ? "e.g. Sipho Dlamini" : "e.g. Masakhane Community Fund"} disabled={loading || success} />
+                </div>
+                <div className={s.field}>
+                  <label htmlFor="organizationType">Funding style</label>
                   <select id="organizationType" value={organizationType} onChange={event => setOrganizationType(event.target.value)} disabled={loading || success}>
-                    <option value="">Select organization type</option>
+                    <option value="">Select funding style</option>
                     {organizationTypes.map(type => <option key={type} value={type}>{type}</option>)}
                   </select>
                 </div>
@@ -366,19 +382,20 @@ export default function SignUp() {
                     <label htmlFor="investmentFocus">Investment focus</label>
                     <select id="investmentFocus" value={investmentFocus} onChange={event => setInvestmentFocus(event.target.value)} disabled={loading || success}>
                       <option value="">Select focus</option>
-                      <option value="Early Stage">Early Stage</option>
-                      <option value="Growth Stage">Growth Stage</option>
-                      <option value="Late Stage">Late Stage</option>
-                      <option value="All Stages">All Stages</option>
-                      <option value="Technology">Technology</option>
-                      <option value="Social Impact">Social Impact</option>
-                      <option value="Sustainable">Sustainable</option>
+                      <option value="Local township businesses">Local township businesses</option>
+                      <option value="Women-owned businesses">Women-owned businesses</option>
+                      <option value="Youth-owned businesses">Youth-owned businesses</option>
+                      <option value="Food and agriculture">Food and agriculture</option>
+                      <option value="Community services">Community services</option>
+                      <option value="Social impact">Social impact</option>
                     </select>
                   </div>
                   <div className={s.field}>
                     <label htmlFor="investmentRange">Investment range</label>
                     <select id="investmentRange" value={investmentRange} onChange={event => setInvestmentRange(event.target.value)} disabled={loading || success}>
                       <option value="">Select range</option>
+                      <option value="R1,000-R5,000">R1,000 - R5,000</option>
+                      <option value="R5,000-R25,000">R5,000 - R25,000</option>
                       <option value="R10,000-R50,000">R10,000 - R50,000</option>
                       <option value="R50,000-R100,000">R50,000 - R100,000</option>
                       <option value="R100,000-R500,000">R100,000 - R500,000</option>

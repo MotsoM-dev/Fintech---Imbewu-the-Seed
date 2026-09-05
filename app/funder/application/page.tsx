@@ -1,101 +1,68 @@
-// app/funder/applications/page.tsx
 "use client";
 
 import { useState } from "react";
 import Link from "next/link";
+import { GlassCard, PageHero, StatCard } from "../FunderUI";
 
-export default function ApplicationsPage() {
+const requests = [
+  { id: "1", business: "Khula Foods", owner: "Ayanda Mbeki", requested: "R50,000", score: 82, status: "Reviewing", industry: "Agriculture", location: "East London", date: "2 Sep 2026", purpose: "Cold storage and delivery crates", signal: "Consistent demand from households and local food sellers.", coverImage: "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=900&q=80", accent: "green" },
+  { id: "2", business: "Sisonke Repair Co-op", owner: "Mandla Jali", requested: "R18,000", score: 76, status: "New", industry: "Services", location: "Mdantsane", date: "1 Sep 2026", purpose: "Tools and spare parts inventory", signal: "Funding can cut repair wait times and support technician income.", coverImage: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=900&q=80", accent: "blue" },
+  { id: "3", business: "Nomsa School Uniforms", owner: "Nomsa Peyi", requested: "R12,000", score: 71, status: "Offer Sent", industry: "Retail", location: "East London", date: "30 Aug 2026", purpose: "Fabric, thread, and ready-made uniform stock", signal: "Seasonal demand is rising before the next school term.", coverImage: "https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&w=900&q=80", accent: "gold" },
+  { id: "4", business: "Green Energy Solutions", owner: "Thabo Molefe", requested: "R200,000", score: 88, status: "Funded", industry: "Technology", location: "Johannesburg", date: "15 Aug 2026", purpose: "Installation stock and technician training", signal: "Recurring service revenue and strong outage-driven demand.", coverImage: "https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=900&q=80", accent: "green" },
+];
+
+export default function RequestsPage() {
   const [filter, setFilter] = useState("All");
-
-  const filters = ["All", "New", "Reviewing", "Offers", "Funded", "Declined"];
-
-  const applications = [
-    { id: "1", business: "Khula Foods", requested: "R50,000", score: 82, status: "Reviewing", industry: "Agriculture", date: "2 Sep 2026" },
-    { id: "2", business: "ABC Farming", requested: "R120,000", score: 76, status: "New", industry: "Agriculture", date: "1 Sep 2026" },
-    { id: "3", business: "Nomsa Fashion", requested: "R30,000", score: 71, status: "Offer Sent", industry: "Fashion", date: "30 Aug 2026" },
-    { id: "4", business: "Green Energy", requested: "R200,000", score: 88, status: "Funded", industry: "Technology", date: "15 Aug 2026" },
-  ];
-
-  const statusColors = {
-    "New": "bg-blue-100 text-blue-700",
-    "Reviewing": "bg-yellow-100 text-yellow-700",
-    "Offer Sent": "bg-green-100 text-green-700",
-    "Funded": "bg-emerald-100 text-emerald-700",
-    "Declined": "bg-red-100 text-red-700",
-  };
-
-  const filteredApps = filter === "All" ? applications : applications.filter(a => a.status === filter);
+  const filters = ["All", "New", "Reviewing", "Offer Sent", "Funded", "Declined"];
+  const filteredRequests = filter === "All" ? requests : requests.filter((request) => request.status === filter);
+  const activeCapital = requests.filter((request) => request.status !== "Declined").length;
 
   return (
-    <div className="p-8">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Applications</h1>
-        <p className="text-gray-500">Review and manage funding applications</p>
+    <>
+      <PageHero eyebrow="Requests" title="Review funding requests like an investor." description="A sharper request room for comparing readiness, purpose, traction, and community upside before you open a business account." />
+      <div className="funder-grid funder-grid-4">
+        <StatCard label="Active requests" value={String(activeCapital)} note="Businesses asking for capital" tone="green" />
+        <StatCard label="Highest readiness" value="88%" note="Green Energy Solutions" tone="blue" />
+        <StatCard label="Capital requested" value="R280k" note="Across visible requests" tone="purple" />
+        <StatCard label="Offers moving" value="2" note="Reviewing or sent" tone="gold" />
       </div>
-
-      {/* Filters */}
-      <div className="flex flex-wrap gap-2 mb-6">
-        {filters.map((f) => (
-          <button
-            key={f}
-            onClick={() => setFilter(f)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
-              filter === f
-                ? "bg-blue-600 text-white"
-                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-            }`}
-          >
-            {f}
-          </button>
-        ))}
-      </div>
-
-      {/* Table */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Business</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Industry</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Requested</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Score</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {filteredApps.map((app) => (
-                <tr key={app.id} className="hover:bg-gray-50 transition cursor-pointer">
-                  <td className="px-6 py-4 font-medium text-gray-800">{app.business}</td>
-                  <td className="px-6 py-4 text-gray-600">{app.industry}</td>
-                  <td className="px-6 py-4 text-gray-800">{app.requested}</td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-semibold text-gray-800">{app.score}%</span>
-                      <div className="w-16 bg-gray-200 rounded-full h-1.5">
-                        <div className="bg-emerald-500 h-1.5 rounded-full" style={{ width: `${app.score}%` }}></div>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusColors[app.status as keyof typeof statusColors]}`}>
-                      {app.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-gray-500 text-sm">{app.date}</td>
-                  <td className="px-6 py-4">
-                    <Link href={`/funder/applications/${app.id}`} className="px-3 py-1 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
-                      View
-                    </Link>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      <GlassCard className="funder-request-filter-card">
+        <div>
+          <span className="funder-section-kicker">Request filters</span>
+          <h2>Choose the deal stage</h2>
         </div>
-      </div>
-    </div>
+        <div className="funder-request-filter-tabs">
+          {filters.map((item) => <button key={item} onClick={() => setFilter(item)} data-active={filter === item} className="funder-tab">{item}</button>)}
+        </div>
+      </GlassCard>
+      <section className="funder-request-room">
+        <div className="funder-request-room-head">
+          <div><span className="funder-section-kicker">Live request board</span><h2>{filter === "All" ? "All funding requests" : `${filter} requests`}</h2><p>{filteredRequests.length} business{filteredRequests.length === 1 ? "" : "es"} match this stage.</p></div>
+          <Link href="/funder/discover" className="funder-button-secondary">Back to catalog</Link>
+        </div>
+        <div className="funder-request-room-grid">
+          {filteredRequests.map((request) => (
+            <article className={`funder-request-tile funder-request-tile-${request.accent}`} key={request.id}>
+              <div className="funder-request-tile-cover"><img src={request.coverImage} alt={`${request.business} request cover`} /><span>{request.status}</span></div>
+              <div className="funder-request-tile-body">
+                <div>
+                  <h3>{request.business}</h3>
+                  <p>{request.owner} | {request.industry} | {request.location}</p>
+                </div>
+                <div className="funder-request-tile-purpose"><span>Use of funds</span><strong>{request.purpose}</strong></div>
+                <p>{request.signal}</p>
+                <div className="funder-request-tile-metrics">
+                  <div><span>Requested</span><strong>{request.requested}</strong></div>
+                  <div><span>Readiness</span><strong>{request.score}%</strong></div>
+                  <div><span>Received</span><strong>{request.date}</strong></div>
+                </div>
+                <div className="funder-progress"><span style={{ width: `${request.score}%` }} /></div>
+                <Link href={`/funder/business/${request.id}`} className="funder-button">Open business account</Link>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+    </>
   );
 }

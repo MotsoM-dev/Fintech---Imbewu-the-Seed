@@ -1,166 +1,66 @@
-// app/funder/discover/page.tsx
 "use client";
 
 import { useState } from "react";
 import Link from "next/link";
+import { GlassCard, PageHero, StatCard } from "../FunderUI";
 
-interface Business {
-  id: string;
-  name: string;
-  industry: string;
-  location: string;
-  verified: boolean;
-  readiness: number;
-  revenue: string;
-  tradingHistory: string;
-  fundingRequested: string;
-  description: string;
-}
+type Business = {
+  id: string; name: string; owner: string; industry: string; location: string; verified: boolean; readiness: number; revenue: string; tradingHistory: string; fundingRequested: string; description: string; coverImage: string; profileImage: string; avatar: string; customers: string; products: string;
+};
+
+const businesses: Business[] = [
+  { id: "1", name: "Khula Foods", owner: "Ayanda Mbeki", industry: "Agriculture", location: "East London", verified: true, readiness: 82, revenue: "R24,500/month", tradingHistory: "24 months", fundingRequested: "R50,000", description: "Fresh produce processing and township delivery for households, spazas, and caterers.", coverImage: "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1400&q=80", profileImage: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=320&q=80", avatar: "AM", customers: "180 repeat buyers", products: "Vegetable boxes, dried herbs, catering packs" },
+  { id: "2", name: "Sisonke Repair Co-op", owner: "Mandla Jali", industry: "Services", location: "Mdantsane", verified: true, readiness: 76, revenue: "R18,200/month", tradingHistory: "18 months", fundingRequested: "R18,000", description: "A neighbourhood repair collective fixing appliances, bicycles, and small business equipment.", coverImage: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1400&q=80", profileImage: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=320&q=80", avatar: "MJ", customers: "64 service clients", products: "Appliance repair, tool hire, maintenance plans" },
+  { id: "3", name: "Nomsa School Uniforms", owner: "Nomsa Peyi", industry: "Retail", location: "East London", verified: false, readiness: 71, revenue: "R12,800/month", tradingHistory: "12 months", fundingRequested: "R12,000", description: "Affordable schoolwear and alterations for families preparing for new terms.", coverImage: "https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&w=1400&q=80", profileImage: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=320&q=80", avatar: "NP", customers: "42 monthly families", products: "Uniform sets, hems, repairs, bulk school orders" },
+  { id: "4", name: "Green Energy Solutions", owner: "Thabo Molefe", industry: "Technology", location: "Johannesburg", verified: true, readiness: 88, revenue: "R42,000/month", tradingHistory: "36 months", fundingRequested: "R200,000", description: "Solar maintenance and small installations for homes and community businesses.", coverImage: "https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=1400&q=80", profileImage: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=320&q=80", avatar: "TM", customers: "31 active sites", products: "Solar checks, inverter setup, panel cleaning" },
+];
 
 export default function DiscoverPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [sector, setSector] = useState("");
   const [location, setLocation] = useState("");
-
-  const businesses: Business[] = [
-    {
-      id: "1",
-      name: "Khula Foods",
-      industry: "Agriculture",
-      location: "East London",
-      verified: true,
-      readiness: 82,
-      revenue: "R24,500/month",
-      tradingHistory: "24 months",
-      fundingRequested: "R50,000",
-      description: "Sustainable farming and food processing business",
-    },
-    {
-      id: "2",
-      name: "ABC Farming",
-      industry: "Agriculture",
-      location: "KwaZulu-Natal",
-      verified: true,
-      readiness: 76,
-      revenue: "R18,200/month",
-      tradingHistory: "18 months",
-      fundingRequested: "R120,000",
-      description: "Organic vegetable farming and distribution",
-    },
-    {
-      id: "3",
-      name: "Nomsa Fashion",
-      industry: "Fashion",
-      location: "Cape Town",
-      verified: false,
-      readiness: 71,
-      revenue: "R12,800/month",
-      tradingHistory: "12 months",
-      fundingRequested: "R30,000",
-      description: "African-inspired fashion and accessories",
-    },
-    {
-      id: "4",
-      name: "Green Energy Solutions",
-      industry: "Technology",
-      location: "Johannesburg",
-      verified: true,
-      readiness: 88,
-      revenue: "R42,000/month",
-      tradingHistory: "36 months",
-      fundingRequested: "R200,000",
-      description: "Solar energy installation and maintenance",
-    },
-  ];
-
-  const filteredBusinesses = businesses.filter((b) => {
-    const matchesSearch = b.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          b.industry.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesSector = !sector || b.industry === sector;
-    const matchesLocation = !location || b.location.includes(location);
+  const sectors = ["All", "Agriculture", "Services", "Retail", "Technology"];
+  const filteredBusinesses = businesses.filter((business) => {
+    const matchesSearch = `${business.name} ${business.industry} ${business.owner}`.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSector = !sector || business.industry === sector;
+    const matchesLocation = !location || business.location.toLowerCase().includes(location.toLowerCase());
     return matchesSearch && matchesSector && matchesLocation;
   });
 
-  const sectors = ["All", "Agriculture", "Fashion", "Technology", "Retail", "Food & Beverage"];
-
   return (
-    <div className="p-8">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Discover Businesses</h1>
-        <p className="text-gray-500">Find and fund promising SMEs</p>
+    <>
+      <PageHero eyebrow="Business catalog" title="Discover community businesses with real storefronts." description="Browse portfolio-style business profiles with owner identity, trading proof, products, traction, and a storefront preview before opening the full account." />
+      <div className="funder-grid funder-grid-3">
+        <StatCard label="Catalog matches" value={String(filteredBusinesses.length)} note="Business portfolios visible now" tone="green" />
+        <StatCard label="Verified profiles" value={String(filteredBusinesses.filter((business) => business.verified).length)} note="Evidence-backed opportunities" tone="blue" />
+        <StatCard label="Local request pool" value="R380k" note="Across visible funding requests" tone="purple" />
       </div>
-
-      {/* Filters */}
-      <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <input
-            type="text"
-            placeholder="Search businesses..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
-          <select
-            value={sector}
-            onChange={(e) => setSector(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          >
-            {sectors.map((s) => (
-              <option key={s} value={s === "All" ? "" : s}>{s}</option>
-            ))}
-          </select>
-          <input
-            type="text"
-            placeholder="Location..."
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
+      <GlassCard className="funder-catalog-filter">
+        <div className="funder-grid funder-grid-3">
+          <input className="funder-input" type="text" placeholder="Search by business, owner, or sector..." value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} />
+          <select className="funder-input" value={sector} onChange={(event) => setSector(event.target.value)}>{sectors.map((item) => <option key={item} value={item === "All" ? "" : item}>{item}</option>)}</select>
+          <input className="funder-input" type="text" placeholder="Filter by location..." value={location} onChange={(event) => setLocation(event.target.value)} />
         </div>
-      </div>
-
-      {/* Results */}
-      <div className="space-y-4">
+      </GlassCard>
+      <div className="funder-catalog-grid">
         {filteredBusinesses.map((business) => (
-          <div key={business.id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:border-blue-300 transition">
-            <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
-              <div className="flex-1">
-                <div className="flex items-center gap-3">
-                  <h3 className="text-lg font-semibold text-gray-800">{business.name}</h3>
-                  {business.verified && (
-                    <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs font-medium rounded-full">
-                      VERIFIED ✓
-                    </span>
-                  )}
-                </div>
-                <p className="text-gray-500 text-sm">{business.industry} • {business.location}</p>
-                <p className="text-gray-600 text-sm mt-1">{business.description}</p>
-                
-                <div className="flex flex-wrap items-center gap-4 mt-3">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium text-gray-700">Readiness:</span>
-                    <div className="flex items-center gap-2">
-                      <div className="w-24 bg-gray-200 rounded-full h-2">
-                        <div className="bg-emerald-500 h-2 rounded-full" style={{ width: `${business.readiness}%` }}></div>
-                      </div>
-                      <span className="text-sm font-semibold text-emerald-600">{business.readiness}%</span>
-                    </div>
-                  </div>
-                  <span className="text-sm text-gray-500">Revenue: {business.revenue}</span>
-                  <span className="text-sm text-gray-500">Trading: {business.tradingHistory}</span>
-                  <span className="text-sm font-medium text-blue-600">Funding: {business.fundingRequested}</span>
-                </div>
+          <article className="funder-catalog-card" key={business.id}>
+            <div className="funder-catalog-cover"><img src={business.coverImage} alt={`${business.name} cover`} /><span className="funder-catalog-badge">{business.verified ? "Verified portfolio" : "Verification pending"}</span></div>
+            <div className="funder-catalog-body">
+              <div className="funder-catalog-identity"><div className="funder-catalog-avatar"><img src={business.profileImage} alt={business.owner} /></div><div><h2>{business.name}</h2><p>{business.owner} | {business.industry} | {business.location}</p></div></div>
+              <p>{business.description}</p>
+              <div className="funder-catalog-facts">
+                <div><span>Readiness</span><strong>{business.readiness}%</strong></div>
+                <div><span>Revenue</span><strong>{business.revenue}</strong></div>
+                <div><span>Trading</span><strong>{business.tradingHistory}</strong></div>
+                <div><span>Customers</span><strong>{business.customers}</strong></div>
               </div>
-              <Link
-                href={`/funder/business/${business.id}`}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-medium whitespace-nowrap"
-              >
-                View Business →
-              </Link>
+              <div className="funder-catalog-storefront"><span>Storefront shelf</span><p>{business.products}</p></div>
+              <div className="funder-catalog-actions"><span className="funder-pill positive">{business.fundingRequested} requested</span><Link href={`/funder/business/${business.id}`} className="funder-button">Open account</Link></div>
             </div>
-          </div>
+          </article>
         ))}
       </div>
-    </div>
+    </>
   );
 }

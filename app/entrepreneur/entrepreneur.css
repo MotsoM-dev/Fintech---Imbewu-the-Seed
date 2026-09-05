@@ -102,7 +102,7 @@
 .entrepreneur-user small { color:rgba(236,253,245,.72); }
 .entrepreneur-collapse { margin:.2rem .9rem 1rem; border:0; border-radius:1rem; padding:.8rem; cursor:pointer; color:#eaffff; background:rgba(255,255,255,.1); font-weight:800; }
 
-.entrepreneur-main { width:100%; margin-left:20rem; padding:1.5rem; position:relative; z-index:1; transition:margin-left .28s ease; }
+.entrepreneur-main { width:100%; margin-left:20rem; padding:1.5rem; position:relative; z-index:1; overflow:visible; transition:margin-left .28s ease; }
 .entrepreneur-main-collapsed { margin-left:8.25rem; }
 .entrepreneur-page { max-width:1480px; margin:0 auto; padding: .5rem 0 3rem; }
 
@@ -118,7 +118,7 @@
 .entrepreneur-grid-2 { grid-template-columns: repeat(2, minmax(0,1fr)); }
 .entrepreneur-grid-3 { grid-template-columns: repeat(3, minmax(0,1fr)); }
 .entrepreneur-grid-4 { grid-template-columns: repeat(4, minmax(0,1fr)); }
-.entrepreneur-card, .entrepreneur-stat { position:relative; overflow:hidden; border:1px solid rgba(255,255,255,.72); border-radius:1.6rem; background:linear-gradient(145deg, rgba(255,255,255,.78), rgba(238,250,255,.56)); box-shadow:0 18px 50px rgba(8,38,90,.1); backdrop-filter:blur(18px) saturate(150%); }
+.entrepreneur-card, .entrepreneur-stat { position:relative; z-index:1; overflow:hidden; border:1px solid rgba(255,255,255,.72); border-radius:1.6rem; background:linear-gradient(145deg, rgba(255,255,255,.78), rgba(238,250,255,.56)); box-shadow:0 18px 50px rgba(8,38,90,.1); backdrop-filter:blur(18px) saturate(150%); }
 .entrepreneur-card { padding:1.25rem; }
 .entrepreneur-card h2, .entrepreneur-card h3 { color:var(--e-blue-950); letter-spacing:-.035em; }
 .entrepreneur-card p, .entrepreneur-card li { color:var(--e-muted); }
@@ -360,7 +360,7 @@
   .entrepreneur-mini-metrics { grid-template-columns: 1fr; }
 }
 
-/* Calm cockpit refinements: no ambient motion, sharper feature experience */
+/* Calm workspace refinements: no ambient motion, sharper feature experience */
 .entrepreneur-shell::before,
 .entrepreneur-shell::after,
 .entrepreneur-sidebar::before,
@@ -380,7 +380,8 @@
 .entrepreneur-topbar {
   position: sticky;
   top: 1rem;
-  z-index: 4;
+  z-index: 120;
+  overflow: visible;
   margin-bottom: 1rem;
   padding: .75rem .85rem .75rem 1rem;
   border: 1px solid rgba(255,255,255,.72);
@@ -1462,4 +1463,287 @@
 .entrepreneur-sidebar-collapsed .entrepreneur-logout,
 .entrepreneur-sidebar-collapsed .entrepreneur-collapse {
   padding: .72rem;
+}
+
+.entrepreneur-topbar-actions {
+  position: relative;
+  z-index: 130;
+}
+
+.entrepreneur-icon-button {
+  width: 2.9rem;
+  height: 2.9rem;
+  border: 1px solid rgba(14,116,144,.16);
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  color: var(--e-blue-800);
+  background: rgba(255,255,255,.78);
+  box-shadow: 0 12px 28px rgba(8,38,90,.06);
+  cursor: pointer;
+  position: relative;
+}
+
+.entrepreneur-alert-dot {
+  position: absolute;
+  top: -.35rem;
+  right: -.35rem;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0 .35rem;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  color: #032017;
+  background: linear-gradient(135deg, #baffdf, var(--e-green));
+  border: 2px solid rgba(255,255,255,.9);
+  box-shadow: 0 0 0 5px rgba(20,215,154,.16), 0 10px 22px rgba(8,38,90,.22);
+  font-size: .72rem;
+  font-weight: 950;
+}
+
+.entrepreneur-alert-popover {
+  position: absolute;
+  top: 3.6rem;
+  right: 4.1rem;
+  z-index: 999;
+  width: min(25rem, calc(100vw - 2rem));
+  padding: .85rem;
+  border-radius: 1.1rem;
+  color: var(--e-blue-950);
+  background: linear-gradient(145deg, rgba(255,255,255,.98), rgba(229,249,255,.94));
+  border: 1px solid rgba(14,116,144,.2);
+  box-shadow: 0 26px 70px rgba(8,38,90,.2);
+  backdrop-filter: blur(20px) saturate(160%);
+}
+
+.entrepreneur-alert-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: .25rem .25rem .75rem;
+}
+
+.entrepreneur-alert-head strong {
+  display: block;
+  color: var(--e-blue-950);
+  font-size: 1rem;
+}
+
+.entrepreneur-alert-head span {
+  color: var(--e-muted);
+  font-size: .78rem;
+  font-weight: 850;
+}
+
+.entrepreneur-alert-head button,
+.entrepreneur-alert-item button {
+  border: 0;
+  border-radius: 999px;
+  padding: .45rem .7rem;
+  color: white;
+  background: var(--e-blue-700);
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.entrepreneur-alert-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: .75rem;
+  margin-top: .55rem;
+  padding: .82rem;
+  border-radius: .95rem;
+  border: 1px solid rgba(14,116,144,.16);
+  background: rgba(255,255,255,.78);
+  box-shadow: 0 12px 28px rgba(8,38,90,.08);
+}
+
+.entrepreneur-alert-item strong {
+  color: var(--e-blue-950);
+}
+
+.entrepreneur-alert-item p {
+  margin: .24rem 0 0;
+  color: var(--e-muted);
+  font-size: .88rem;
+  line-height: 1.45;
+}
+
+.entrepreneur-alert-green { border-left: 4px solid var(--e-green); }
+.entrepreneur-alert-blue { border-left: 4px solid var(--e-cyan); }
+.entrepreneur-alert-gold { border-left: 4px solid #f4c430; }
+.entrepreneur-alert-empty {
+  margin: 0;
+  padding: .8rem;
+  color: var(--e-muted);
+}
+
+.entrepreneur-shell[data-theme="dark"] {
+  --e-ink: #f0fbff;
+  --e-muted: #b8d4e4;
+  --e-line: rgba(124,246,200,.23);
+  background: radial-gradient(circle at 15% 8%, rgba(21,199,239,.14), transparent 22rem), radial-gradient(circle at 88% 18%, rgba(20,215,154,.14), transparent 24rem), linear-gradient(135deg, #030b16 0%, #071a2e 52%, #052821 100%);
+}
+
+.entrepreneur-shell[data-theme="dark"] .entrepreneur-card,
+.entrepreneur-shell[data-theme="dark"] .entrepreneur-stat,
+.entrepreneur-shell[data-theme="dark"] .entrepreneur-hero,
+.entrepreneur-shell[data-theme="dark"] .entrepreneur-topbar,
+.entrepreneur-shell[data-theme="dark"] .entrepreneur-profile-chip,
+.entrepreneur-shell[data-theme="dark"] .entrepreneur-chat-chip,
+.entrepreneur-shell[data-theme="dark"] .entrepreneur-icon-button,
+.entrepreneur-shell[data-theme="dark"] .entrepreneur-input,
+.entrepreneur-shell[data-theme="dark"] .entrepreneur-textarea,
+.entrepreneur-shell[data-theme="dark"] .entrepreneur-row {
+  background: linear-gradient(145deg, rgba(8, 34, 57, .94), rgba(5, 24, 36, .9));
+  border-color: rgba(124,246,200,.23);
+  color: var(--e-ink);
+  box-shadow: 0 22px 64px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.07);
+}
+
+.entrepreneur-shell[data-theme="dark"] .entrepreneur-card h2,
+.entrepreneur-shell[data-theme="dark"] .entrepreneur-card h3,
+.entrepreneur-shell[data-theme="dark"] .entrepreneur-hero h1,
+.entrepreneur-shell[data-theme="dark"] .entrepreneur-topbar strong,
+.entrepreneur-shell[data-theme="dark"] .entrepreneur-stat strong,
+.entrepreneur-shell[data-theme="dark"] .entrepreneur-profile-chip,
+.entrepreneur-shell[data-theme="dark"] .entrepreneur-input,
+.entrepreneur-shell[data-theme="dark"] .entrepreneur-textarea {
+  color: var(--e-ink);
+}
+
+.entrepreneur-shell[data-theme="dark"] .entrepreneur-button-secondary { color: #defbff; background: rgba(9, 55, 82, .72); border-color: rgba(124,246,200,.26); }
+.entrepreneur-shell[data-theme="dark"] .entrepreneur-pill { color: #9cfbd1; background: rgba(20,215,154,.14); border: 1px solid rgba(124,246,200,.18); }
+.entrepreneur-shell[data-theme="dark"] .entrepreneur-stat-green strong { color: #7cffc7; }
+.entrepreneur-shell[data-theme="dark"] .entrepreneur-stat-blue strong { color: #72e6ff; }
+.entrepreneur-shell[data-theme="dark"] .entrepreneur-stat-gold strong { color: #ffe88a; }
+.entrepreneur-shell[data-theme="dark"] .entrepreneur-stat-purple strong { color: #d6bdff; }
+.entrepreneur-shell[data-theme="dark"] .entrepreneur-alert-popover { background: linear-gradient(145deg, rgba(7, 34, 55, .98), rgba(5, 24, 36, .96)); border-color: rgba(124,246,200,.25); box-shadow: 0 30px 80px rgba(0,0,0,.5); }
+.entrepreneur-shell[data-theme="dark"] .entrepreneur-alert-head strong,
+.entrepreneur-shell[data-theme="dark"] .entrepreneur-alert-item strong { color: #f0fbff; }
+.entrepreneur-shell[data-theme="dark"] .entrepreneur-alert-head span,
+.entrepreneur-shell[data-theme="dark"] .entrepreneur-alert-item p,
+.entrepreneur-shell[data-theme="dark"] .entrepreneur-alert-empty { color: #b8d4e4; }
+.entrepreneur-shell[data-theme="dark"] .entrepreneur-alert-item { background: rgba(8, 42, 66, .86); border-color: rgba(124,246,200,.22); }
+
+.entrepreneur-message-experience {
+  grid-template-columns: minmax(0, 1.35fr) minmax(20rem, .65fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.entrepreneur-message-banner {
+  margin-bottom: 1rem;
+  padding: 1.1rem;
+  border-radius: 1.35rem;
+  color: white;
+  background: radial-gradient(circle at 90% 12%, rgba(20,215,154,.42), transparent 12rem), linear-gradient(135deg, #063a5f, #0f766e);
+  box-shadow: 0 24px 58px rgba(8,38,90,.18);
+  position: relative;
+  overflow: hidden;
+}
+
+.entrepreneur-message-banner span {
+  color: #baffdf;
+  font-weight: 950;
+  font-size: .74rem;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+}
+
+.entrepreneur-message-banner h2 {
+  margin: .35rem 0;
+  color: white;
+  font-size: clamp(1.6rem, 3vw, 2.5rem);
+  font-weight: 950;
+  letter-spacing: -.07em;
+}
+
+.entrepreneur-message-banner p {
+  margin: 0;
+  color: rgba(240,253,255,.9);
+  font-weight: 800;
+}
+
+.entrepreneur-message-experience .assistant-chat {
+  border-radius: 1.35rem;
+  background: linear-gradient(145deg, rgba(255,255,255,.78), rgba(232,249,255,.62));
+  border: 1px solid rgba(14,116,144,.16);
+  overflow: hidden;
+}
+
+.entrepreneur-message-experience .assistant-chat-header {
+  padding: 1rem;
+  background: linear-gradient(135deg, rgba(14,116,144,.12), rgba(20,215,154,.12));
+}
+
+.entrepreneur-message-experience .assistant-chat-header strong,
+.entrepreneur-message-sidebar h2 {
+  color: var(--e-blue-950);
+  font-weight: 950;
+  letter-spacing: -.04em;
+}
+
+.entrepreneur-message-experience .chat-thread {
+  padding: 1rem;
+  background: radial-gradient(circle at 12% 10%, rgba(21,199,239,.12), transparent 12rem);
+}
+
+.entrepreneur-message-experience .assistant-bubble {
+  box-shadow: 0 14px 34px rgba(8,38,90,.08);
+  border: 1px solid rgba(14,116,144,.12);
+}
+
+.entrepreneur-message-experience .assistant-bubble p {
+  font-weight: 750;
+  line-height: 1.55;
+}
+
+.entrepreneur-message-experience .quick-prompts button {
+  border-radius: 999px;
+  border: 1px solid rgba(14,116,144,.16);
+  background: rgba(255,255,255,.72);
+  color: var(--e-blue-800);
+  font-weight: 900;
+}
+
+.entrepreneur-message-sidebar {
+  position: sticky;
+  top: 6.5rem;
+  background: radial-gradient(circle at 95% 12%, rgba(20,215,154,.18), transparent 12rem), linear-gradient(145deg, rgba(255,255,255,.84), rgba(232,249,255,.64));
+}
+
+.entrepreneur-shell[data-theme="dark"] .entrepreneur-message-banner {
+  background: radial-gradient(circle at 90% 12%, rgba(20,215,154,.22), transparent 12rem), linear-gradient(135deg, #061a2b, #063429);
+}
+
+.entrepreneur-shell[data-theme="dark"] .entrepreneur-message-experience .assistant-chat,
+.entrepreneur-shell[data-theme="dark"] .entrepreneur-message-sidebar,
+.entrepreneur-shell[data-theme="dark"] .entrepreneur-message-experience .quick-prompts button {
+  background: linear-gradient(145deg, rgba(8, 34, 57, .94), rgba(5, 24, 36, .9));
+  border-color: rgba(124,246,200,.23);
+  color: var(--e-ink);
+}
+
+.entrepreneur-shell[data-theme="dark"] .entrepreneur-message-experience .assistant-chat-header {
+  background: rgba(20,215,154,.1);
+}
+
+.entrepreneur-shell[data-theme="dark"] .entrepreneur-message-experience .assistant-chat-header strong,
+.entrepreneur-shell[data-theme="dark"] .entrepreneur-message-sidebar h2 {
+  color: var(--e-ink);
+}
+
+@media (max-width: 980px) {
+  .entrepreneur-message-experience {
+    grid-template-columns: 1fr;
+  }
+
+  .entrepreneur-message-sidebar {
+    position: relative;
+    top: auto;
+  }
 }

@@ -102,8 +102,13 @@ export default function AssistantChatPage() {
         description={`Welcome, ${accountState.account.shortName}. Your assisted support is active. Ask about CIPC steps, official costs, director details or evidence uploads.`}
       />
 
-      <div className="entrepreneur-grid chat-page-grid">
+      <div className="entrepreneur-grid chat-page-grid entrepreneur-message-experience">
         <GlassCard className="chat-workspace-card">
+          <div className="entrepreneur-message-banner">
+            <span>Live support room</span>
+            <h2>{accountState.business.name} assistant thread</h2>
+            <p>Ask, prepare, upload, and keep business registration support moving without losing context.</p>
+          </div>
           <div className="assistant-chat full-chat live-chat">
             <div className="assistant-chat-header"><strong>Imbewu Registration Assistant</strong><span>Paid support active</span></div>
             <div className="chat-thread" aria-live="polite">
@@ -125,7 +130,7 @@ export default function AssistantChatPage() {
         </GlassCard>
 
         <div className="chat-side-stack">
-          <GlassCard>
+          <GlassCard className="entrepreneur-message-sidebar">
             <h2>Registration checklist</h2>
             <p>{completeCount} of {checklist.length} steps have useful detail in the conversation.</p>
             <div className="entrepreneur-progress entrepreneur-progress-tall" style={{ marginTop: "1rem" }}><span style={{ width: `${(completeCount / checklist.length) * 100}%` }} /></div>
