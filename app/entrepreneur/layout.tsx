@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { BusinessStateProvider, useBusinessState } from "./BusinessState";
 import "./entrepreneur.css";
+import { useTheme } from "../useTheme";
 
 type IconName = "dashboard" | "finances" | "documents" | "funding" | "storefront" | "user" | "chat" | "alerts" | "theme" | "logout" | "collapse" | "expand";
 
@@ -48,7 +49,7 @@ function ImbewuMark() {
 function EntrepreneurLayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const { theme, toggleTheme } = useTheme();
   const [alertsOpen, setAlertsOpen] = useState(false);
   const [notifications, setNotifications] = useState([
     { id: "documents", title: "Document proof improved", text: "Bank Statement - August is verified and visible to funders.", tone: "green" },
@@ -112,7 +113,7 @@ function EntrepreneurLayoutContent({ children }: { children: React.ReactNode }) 
                 )) : <p className="entrepreneur-alert-empty">Nothing needs your attention right now.</p>}
               </div>
             ) : null}
-            <button className="entrepreneur-icon-button" onClick={() => setTheme((value) => value === "light" ? "dark" : "light")} aria-label="Toggle light and dark mode" title="Light / dark mode">
+            <button className="entrepreneur-icon-button" onClick={toggleTheme} aria-label="Toggle light and dark mode" title="Light / dark mode">
               <WorkspaceIcon name="theme" />
             </button>
             <Link href="/entrepreneur/business" className="entrepreneur-profile-chip" aria-label="Open profile and business evidence">

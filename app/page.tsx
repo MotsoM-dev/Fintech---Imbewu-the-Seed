@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import s from "./landing.module.css";
+import { useTheme } from "./useTheme";
 
 type IconName = "arrow" | "leaf" | "chart" | "spark" | "shield" | "check" | "menu" | "moon" | "sun" | "store" | "file";
 type PreviewKey = "profile" | "records" | "funding";
@@ -76,24 +77,12 @@ const plans = [
 export default function LandingPage() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [paused, setPaused] = useState(false);
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const { theme, toggleTheme } = useTheme();
   const [tab, setTab] = useState<PreviewKey>("profile");
   const [activeSection, setActiveSection] = useState<SectionKey>("market");
   const root = useRef<HTMLDivElement>(null);
   const scene = useRef<HTMLDivElement>(null);
   const preview = previews[tab];
-
-  useEffect(() => {
-    const stored = window.localStorage.getItem("imbewu-theme");
-    if (stored === "dark" || stored === "light") {
-      setTheme(stored);
-      return;
-    }
-
-    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      setTheme("dark");
-    }
-  }, []);
 
   useEffect(() => {
     const sections = navItems.map(item => document.getElementById(item.id)).filter((section): section is HTMLElement => Boolean(section));
@@ -112,10 +101,6 @@ export default function LandingPage() {
     sections.forEach(section => observer.observe(section));
     return () => observer.disconnect();
   }, []);
-
-  useEffect(() => {
-    window.localStorage.setItem("imbewu-theme", theme);
-  }, [theme]);
 
   useEffect(() => {
     const elements = root.current?.querySelectorAll("[data-reveal]");
@@ -144,8 +129,6 @@ export default function LandingPage() {
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
   }, [menuOpen]);
-
-  const toggleTheme = () => setTheme(current => (current === "light" ? "dark" : "light"));
 
   return (
     <div ref={root} className={`${s.landing} ${s[theme]} ${paused ? s.paused : ""}`}>

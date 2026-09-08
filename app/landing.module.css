@@ -19,7 +19,7 @@
     linear-gradient(45deg, transparent 58%, rgba(8, 166, 110, 0.18)),
     var(--bg);
   color: var(--ink);
-  font-family: var(--font-geist-sans), Arial, sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
   line-height: 1.55;
   overflow-x: hidden;
   scroll-behavior: smooth;
@@ -31,24 +31,26 @@
 }
 
 .dark {
-  --bg: #031a1d;
-  --bg-strong: #062b2f;
-  --surface: rgba(7, 45, 48, 0.78);
-  --surface-solid: #082d30;
-  --surface-deep: #031315;
-  --ink: #e9fff6;
-  --muted: #a7cbc0;
-  --line: rgba(128, 255, 211, 0.2);
-  --blue: #38a4ff;
-  --green: #10d786;
-  --mint: #78ffc4;
-  --aqua: #2ce4dd;
-  --shadow: rgba(0, 0, 0, 0.34);
-  --glass: rgba(10, 50, 54, 0.66);
-  --glow: rgba(16, 215, 134, 0.2);
+  --bg: #05110f;
+  --bg-strong: #0b1f1d;
+  --surface: rgba(12, 36, 33, 0.84);
+  --surface-solid: #102a27;
+  --surface-deep: #020807;
+  --ink: #f1fff8;
+  --muted: #b5d6cb;
+  --line: rgba(127, 255, 202, 0.24);
+  --blue: #65b7ff;
+  --green: #42e59a;
+  --mint: #b9ffd9;
+  --aqua: #35e4d0;
+  --shadow: rgba(0, 0, 0, 0.46);
+  --glass: rgba(14, 43, 39, 0.78);
+  --glow: rgba(53, 228, 208, 0.18);
   background:
-    linear-gradient(125deg, rgba(56, 164, 255, 0.18), transparent 34%),
-    linear-gradient(45deg, transparent 54%, rgba(16, 215, 134, 0.16)),
+    radial-gradient(circle at 18% 6%, rgba(101, 183, 255, 0.18), transparent 26rem),
+    radial-gradient(circle at 86% 22%, rgba(66, 229, 154, 0.2), transparent 30rem),
+    linear-gradient(125deg, rgba(53, 228, 208, 0.1), transparent 34%),
+    linear-gradient(45deg, transparent 54%, rgba(255, 205, 92, 0.08)),
     var(--bg);
 }
 
@@ -221,6 +223,11 @@
   box-shadow: 0 16px 38px color-mix(in srgb, var(--green) 30%, transparent);
   color: #fff;
   padding: 15px 22px;
+}
+
+.landing .navCta,
+.landing .primaryButton {
+  color: #fff;
 }
 
 .navCta:hover,
@@ -1145,6 +1152,10 @@
   color: #07564b;
   margin-top: 32px;
   padding: 15px 24px;
+}
+
+.landing .whiteButton {
+  color: #07564b;
 }
 
 .light .finalCta .whiteButton {
