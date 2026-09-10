@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { FunderStateProvider, useFunderState } from "./FunderState";
 import "./funder.css";
+import { useTheme } from "../useTheme";
 
 type FunderIconName = "dashboard" | "discover" | "applications" | "portfolio" | "messages" | "business" | "profile" | "alerts" | "theme" | "logout" | "collapse" | "expand";
 
@@ -41,7 +42,7 @@ function FunderLayoutContent({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const { theme, toggleTheme } = useTheme();
   const [alertsOpen, setAlertsOpen] = useState(false);
   const [notifications, setNotifications] = useState([
     { id: "ready-review", title: "Khula Foods is ready", text: "All evidence checks are complete. You can make a community funding decision.", tone: "green" },
@@ -125,7 +126,7 @@ function FunderLayoutContent({ children }: { children: React.ReactNode }) {
                 )) : <p className="funder-alert-empty">Nothing needs your attention right now.</p>}
               </div>
             ) : null}
-            <button className="funder-icon-button" onClick={() => setTheme((value) => value === "light" ? "dark" : "light")} aria-label="Toggle light and dark mode" title="Light / dark mode">
+            <button className="funder-icon-button" onClick={toggleTheme} aria-label="Toggle light and dark mode" title="Light / dark mode">
               <FunderIcon name="theme" />
             </button>
             <Link href="/funder/profile" className="funder-profile-chip" aria-label="Open funder profile">

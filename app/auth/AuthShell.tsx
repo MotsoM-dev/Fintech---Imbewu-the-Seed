@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
 import s from "./auth.module.css";
+import { useTheme } from "../useTheme";
 
 const slides = [
   {
@@ -54,6 +55,7 @@ function LeafIcon() {
 
 export function AuthShell({ children, mode }: { children: ReactNode; mode: "signin" | "signup" }) {
   const [activeSlide, setActiveSlide] = useState(0);
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -66,7 +68,7 @@ export function AuthShell({ children, mode }: { children: ReactNode; mode: "sign
   const currentSlide = slides[activeSlide];
 
   return (
-    <main className={s.authPage}>
+    <main className={`${s.authPage} ${s[theme]}`}>
       <div className={s.ambientField} aria-hidden="true">
         <span />
         <span />
@@ -83,6 +85,9 @@ export function AuthShell({ children, mode }: { children: ReactNode; mode: "sign
       <Link href="/" className={s.homeLink} aria-label="Back to Imbewu home">
         <span><LeafIcon /></span>imbewu<b>.</b>
       </Link>
+      <button className={s.themeToggle} type="button" onClick={toggleTheme} aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}>
+        {theme === "light" ? "Dark" : "Light"}
+      </button>
 
       <section className={`${s.authFrame} ${mode === "signup" ? s.visualRight : s.visualLeft}`}>
         <div className={s.visualPanel} aria-label="Imbewu business stories">
