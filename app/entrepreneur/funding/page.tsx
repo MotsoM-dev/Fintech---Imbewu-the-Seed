@@ -10,6 +10,8 @@ export default function FundingPage() {
   const [formData, setFormData] = useState({ amount: "", purpose: "", motivation: "" });
   const tabs = ["opportunities", "requests", "history"];
   const statuses = ["Submitted", "Verified", "Under Review", "Offer", "Funded"];
+  const requestedFunds = accountState.fundingApplications.reduce((total, application) => total + Number(application.amount.replace(/[^0-9]/g, "")), 0);
+  const formatFunds = (amount: number) => `R${amount.toLocaleString("en-ZA")}`;
 
   const submit = () => {
     if (!formData.amount || !formData.purpose || !formData.motivation) return alert("Please fill in the funding request");
@@ -21,6 +23,20 @@ export default function FundingPage() {
   return (
     <>
       <PageHero eyebrow="Funding bridge" title={`Turn ${accountState.business.name}'s proof into opportunity.`} description="Imbewu packages sales consistency, documents and storefront credibility into a readiness story that funders can understand faster." />
+      <section className="entrepreneur-funds-card">
+        <div className="entrepreneur-funds-card-topline"><span>Imbewu capital desk</span><span className="entrepreneur-funds-live"><i /> Live pipeline</span></div>
+        <div className="entrepreneur-funds-card-main">
+          <div><p className="entrepreneur-funds-label">Capital in motion</p><strong>{formatFunds(requestedFunds)}</strong><p className="entrepreneur-funds-caption">Across {accountState.fundingApplications.length} active funding requests</p></div>
+          <div className="entrepreneur-funds-chart" aria-label="Funding pipeline activity"><span style={{ height: "32%" }} /><span style={{ height: "48%" }} /><span style={{ height: "42%" }} /><span style={{ height: "68%" }} /><span style={{ height: "56%" }} /><span style={{ height: "82%" }} /><span style={{ height: "74%" }} /></div>
+        </div>
+        <div className="entrepreneur-funds-divider" />
+        <div className="entrepreneur-funds-summary">
+          <div><span>Matched pool</span><strong>R250k</strong><small>Available fit</small></div>
+          <div><span>Readiness</span><strong>{accountState.metrics.readiness}%</strong><small>Broker signal</small></div>
+          <div><span>Monthly turnover</span><strong>{accountState.metrics.monthlyRevenue}</strong><small>Latest reported</small></div>
+          <div className="entrepreneur-funds-desk"><span>Desk note</span><strong>Profile is investable</strong><small>Evidence is moving with the request</small></div>
+        </div>
+      </section>
       <div className="entrepreneur-grid entrepreneur-grid-3"><StatCard label="Readiness" value={`${accountState.metrics.readiness}%`} note="Strong candidate signal" /><StatCard label="Matched pool" value="R250k" note="Retail stock and equipment fit" tone="green" /><StatCard label="Requests" value={String(accountState.fundingApplications.length)} note="Requests in motion" tone="purple" /></div>
       <div className="entrepreneur-tabs">{tabs.map((tab) => <button className="entrepreneur-tab" data-active={activeTab === tab} key={tab} onClick={() => setActiveTab(tab)}>{tab[0].toUpperCase() + tab.slice(1)}</button>)}</div>
       {activeTab === "opportunities" && <div className="entrepreneur-grid entrepreneur-grid-2"><GlassCard><h2>Stock working capital</h2><p>For grocery inventory, fresh produce turnover and packaging before peak trading days.</p><button className="entrepreneur-button" onClick={() => setActiveTab("requests")}>Start request</button></GlassCard><GlassCard><h2>Cold storage upgrade</h2><p>For reducing spoilage and supporting larger fresh produce orders from families and caterers.</p><button className="entrepreneur-button-secondary" onClick={() => setActiveTab("requests")}>Prepare profile</button></GlassCard></div>}
